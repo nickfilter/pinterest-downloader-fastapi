@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+
+<title>
+Social Video Downloader
+</title>
+
+
+<link rel="icon" href="/static/favicon.ico">
+
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+
+body{
+
+font-family:Arial;
+margin:0;
+background:#f7f7f7;
+
+min-height:100vh;
+
+display:flex;
+
+flex-direction:column;
+
+}
+
+
+/* 导航栏 */
+
+.navbar{
+
+    background:#111;
+    padding:15px 30px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+}
+
+
+.logo{
+
+    color:white;
+    font-size:22px;
+    font-weight:bold;
+
+}
+
+
+.nav a{
+
+    color:white;
+    text-decoration:none;
+    margin-left:25px;
+    font-size:15px;
+
+}
+
+
+.nav a:hover{
+
+    color:#ff3b30;
+
+}
+
+
+
+/* 主区域 */
+
+.container{
+
+text-align:center;
+
+padding:60px;
+
+flex:1;
+
+}
+
+h1{
+
+    font-size:42px;
+
+}
+
+
+p{
+
+    color:#666;
+
+}
+
+
+input{
+
+    width:60%;
+    max-width:600px;
+
+    padding:16px;
+
+    border-radius:8px;
+
+    border:1px solid #ddd;
+
+    font-size:16px;
+
+}
+
+
+
+button{
+
+    padding:16px 30px;
+
+    margin-left:10px;
+
+    background:#e60023;
+
+    color:white;
+
+    border:0;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+}
+
+
+
+button:hover{
+
+    opacity:.85;
+
+}
+
+
+
+/* 功能卡片 */
+
+.cards{
+
+    margin-top:50px;
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:20px;
+
+}
+
+
+.card{
+
+    background:white;
+
+    padding:25px;
+
+    width:200px;
+
+    border-radius:10px;
+
+}
+
+.footer{
+
+background:#111;
+color:white;
+padding:30px;
+text-align:center;
+
+}
+
+</style>
+
+
+</head>
+
+
+<body>
+
+
+
+<!-- 导航 -->
+
+<div class="navbar">
+
+
+<div class="logo">
+
+Social Downloader
+
+</div>
+
+
+<div class="nav">
+
+<a href="/">
+YouTube
+</a>
+
+
+<a href="/tiktok-downloader">
+TikTok
+</a>
+
+
+<a href="/facebook-downloader">
+Facebook
+</a>
+<a href="/instagram-downloader">
+Instagram
+</a>
+<a href="/twitter-downloader">
+twitter
+</a>
+
+<a href="/pinterest-downloader">
+Pinterest
+</a>
+
+<a href="/about">
+About
+</a>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="container">
+
+
+<h1>
+Download Videos Online
+</h1>
+
+
+<p>
+YouTube · TikTok · Facebook · Pinterest Video Downloader
+</p>
+
+
+
+<input 
+id="url"
+placeholder="Paste video URL here">
+
+
+<button onclick="download()">
+
+Download
+
+</button>
+
+
+
+<p id="result"></p>
+
+
+
+
+<div class="cards">
+
+
+<div class="card">
+
+<h3>
+▶ YouTube
+</h3>
+
+<p>
+MP4 Video Download
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h3>
+♪ TikTok
+</h3>
+
+<p>
+Save TikTok Videos
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h3>
+📘 Facebook
+</h3>
+
+<p>
+Download FB Videos
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h3>
+📌 Pinterest
+</h3>
+
+<p>
+Save Pinterest Video
+</p>
+
+</div>
+
+
+
+</div>
+
+<div class="container">
+  
+<h2>
+
+How to download?
+
+</h2>
+
+
+<p>
+
+1. Copy video URL
+
+</p>
+
+
+<p>
+
+2. Paste link above
+
+</p>
+
+
+<p>
+
+3. Click download
+
+</p>
+  
+</div>
+
+
+</div>
+<div class="footer">
+
+
+© 2026 Social Downloader
+
+</div>
+
+
+
+
+
+<script>
+
+
+async function download(){
+
+
+let url =
+document.getElementById("url").value;
+
+
+
+let res =
+await fetch(
+"/download",
+{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":
+"application/json"
+
+},
+
+body:
+JSON.stringify(
+{
+url:url
+}
+)
+
+});
+
+
+
+let data =
+await res.json();
+
+
+
+if(data.video){
+
+document.getElementById("result").innerHTML =
+
+'<a href="'+data.video+'" target="_blank">Download Video</a>';
+
+}
+
+else{
+
+document.getElementById("result").innerHTML =
+"Video not found";
+
+}
+
+
+}
+
+
+
+</script>
+
+
+</body>
+
+</html>
