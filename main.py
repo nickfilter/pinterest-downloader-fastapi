@@ -6,11 +6,11 @@ from api.download import router
 from fastapi.responses import FileResponse
 
 app = FastAPI(title="Online Video Downloader")
-
+app.include_router(router)
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-app.include_router(router)
+
 
 @app.get("/")
 async def home(request: Request):

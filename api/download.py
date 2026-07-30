@@ -1,14 +1,47 @@
+from fastapi import APIRouter, Form
+from fastapi.responses import FileResponse
 
-from fastapi import APIRouter
-from pydantic import BaseModel
-from services.pinterest import extract_video
+from services.downloader import download_video
+
+
 
 router = APIRouter()
 
-class VideoRequest(BaseModel):
-    url: str
+
 
 @router.post("/download")
-async def download(data: VideoRequest):
-    result = await extract_video(data.url)
-    return result
+async def download(
+
+    url:str = Form(...)
+
+):
+
+
+    try:
+
+
+        filepath = download_video(
+            url
+        )
+
+
+        return FileResponse(
+
+            filepath,
+
+            filename="video.mp4",
+
+            media_type="video/mp4"
+
+        )
+
+
+    except Exception as e:
+
+
+        return {
+
+            "error":
+            str(e)
+
+        }
