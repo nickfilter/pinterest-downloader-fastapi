@@ -3,449 +3,928 @@
 
 <head>
 
-<meta charset="utf-8">
+    <meta charset="utf-8">
 
-<title>
-Social Video Downloader
-</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>
+        Social Video Downloader
+    </title>
 
-<link rel="icon" href="/static/favicon.ico">
 
+    <link rel="icon" href="/static/favicon.ico">
 
-<style>
 
-*{
-    box-sizing:border-box;
-}
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
 
-body{
+        body {
 
-font-family:Arial;
-margin:0;
-background:#f7f7f7;
+            font-family: Arial, sans-serif;
 
-min-height:100vh;
+            margin: 0;
 
-display:flex;
+            background: #f7f7f7;
 
-flex-direction:column;
+            min-height: 100vh;
 
-}
+            display: flex;
 
+            flex-direction: column;
 
-/* 导航栏 */
+        }
 
-.navbar{
 
-    background:#111;
-    padding:15px 30px;
+        /* navbar */
 
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
 
-}
+        .navbar {
 
+            background: #111;
 
-.logo{
+            padding: 15px 25px;
 
-    color:white;
-    font-size:22px;
-    font-weight:bold;
+            display: flex;
 
-}
+            align-items: center;
 
+            justify-content: space-between;
 
-.nav a{
+            flex-wrap: wrap;
 
-    color:white;
-    text-decoration:none;
-    margin-left:25px;
-    font-size:15px;
+        }
 
-}
 
+        .logo {
 
-.nav a:hover{
+            color: white;
 
-    color:#ff3b30;
+            font-size: 22px;
 
-}
+            font-weight: bold;
 
+        }
 
 
-/* 主区域 */
 
-.container{
+        .nav {
 
-text-align:center;
+            display: flex;
 
-padding:60px;
+            flex-wrap: wrap;
 
-flex:1;
+        }
 
-}
 
-h1{
+        .nav a {
 
-    font-size:42px;
+            color: white;
 
-}
+            text-decoration: none;
 
+            margin-left: 20px;
 
-p{
+            padding: 8px 12px;
 
-    color:#666;
+            border-radius: 6px;
 
-}
+            font-size: 15px;
 
+            transition: .2s;
 
-input{
+        }
 
-    width:60%;
-    max-width:600px;
 
-    padding:16px;
 
-    border-radius:8px;
+        /* 点击效果 */
 
-    border:1px solid #ddd;
+        .nav a:hover {
 
-    font-size:16px;
+            background: #333;
 
-}
+        }
 
 
 
-button{
+        .nav a:active {
 
-    padding:16px 30px;
+            transform: scale(.92);
 
-    margin-left:10px;
+            background: #e60023;
 
-    background:#e60023;
+        }
 
-    color:white;
 
-    border:0;
 
-    border-radius:8px;
+        .nav a.active {
 
-    cursor:pointer;
+            background: #e60023;
 
-}
+        }
 
 
 
-button:hover{
 
-    opacity:.85;
 
-}
+        /* 主体 */
 
 
+        .container {
 
-/* 功能卡片 */
+            flex: 1;
 
-.cards{
+            text-align: center;
 
-    margin-top:50px;
+            padding: 20px;
 
-    display:flex;
+        }
 
-    justify-content:center;
 
-    gap:20px;
 
-}
+        .ad-box {
 
+            width: 300px;
 
-.card{
+            height: 250px;
 
-    background:white;
+            margin: 20px auto;
 
-    padding:25px;
+            background: #ddd;
 
-    width:200px;
+            display: flex;
 
-    border-radius:10px;
+            align-items: center;
 
-}
+            justify-content: center;
 
-.footer{
+            color: #888;
 
-background:#111;
-color:white;
-padding:30px;
-text-align:center;
+            font-size: 14px;
 
-}
+        }
 
-</style>
+
+        /* 后期 Adsense 替换 */
+
+
+
+
+        h1 {
+
+            font-size: 42px;
+
+        }
+
+
+
+        p {
+
+            color: #666;
+
+        }
+
+
+
+
+
+        .search-box {
+
+            margin: 30px auto;
+
+            display: flex;
+
+            justify-content: center;
+
+        }
+
+
+        input {
+
+            width: 60%;
+
+            max-width: 600px;
+
+            padding: 15px;
+
+            font-size: 16px;
+
+            border: 1px solid #ddd;
+
+            border-radius: 8px;
+
+        }
+
+
+
+        button {
+
+            padding: 15px 25px;
+
+            margin-left: 10px;
+
+            background: #e60023;
+
+            color: white;
+
+            border: 0;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+        }
+
+
+
+        button:hover {
+
+            opacity: .85;
+
+        }
+
+
+
+
+
+
+        /* 下载结果 */
+
+
+        .result-card {
+
+
+            background: white;
+
+            max-width: 700px;
+
+            margin: 30px auto;
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            box-shadow: 0 2px 10px #ddd;
+
+
+        }
+
+
+
+        .video-info {
+
+            display: flex;
+
+            gap: 20px;
+
+            align-items: center;
+
+        }
+
+
+
+        .thumbnail {
+
+
+            width: 160px;
+
+            height: 100px;
+
+            object-fit: cover;
+
+            border-radius: 8px;
+
+
+        }
+
+
+
+        .title {
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            text-align: left;
+
+        }
+
+
+
+        .download-list {
+
+            margin-top: 20px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 12px;
+
+        }
+
+
+
+        .download-list a {
+
+
+            display: block;
+
+            padding: 12px;
+
+            background: #111;
+
+            color: white;
+
+            border-radius: 8px;
+
+            text-decoration: none;
+
+
+        }
+
+
+        .download-list a:hover {
+
+            background: #e60023;
+
+        }
+
+
+
+
+
+        /* 卡片 */
+
+
+        .cards {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 20px;
+
+            flex-wrap: wrap;
+
+            margin-top: 40px;
+
+        }
+
+
+
+        .card {
+
+            background: white;
+
+            padding: 20px;
+
+            width: 200px;
+
+            border-radius: 10px;
+
+        }
+
+
+
+
+        .footer {
+
+            background: #111;
+
+            color: white;
+
+            padding: 25px;
+
+            text-align: center;
+
+        }
+
+
+
+
+
+
+
+        /* 页面提示 */
+
+        .notice {
+
+
+            display: none;
+
+            position: fixed;
+
+            top: 30px;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+
+
+            background: white;
+
+            padding: 20px 30px;
+
+            border-radius: 10px;
+
+            box-shadow: 0 5px 20px #999;
+
+
+            z-index: 999;
+
+
+        }
+
+
+
+
+
+        /* 手机 */
+
+
+        @media(max-width:600px) {
+
+
+
+            .navbar {
+
+                flex-direction: column;
+
+            }
+
+
+
+            .nav {
+
+                justify-content: center;
+
+                margin-top: 15px;
+
+            }
+
+
+            .nav a {
+
+                margin: 5px;
+
+            }
+
+
+
+            h1 {
+
+                font-size: 30px;
+
+            }
+
+
+            .search-box {
+
+                flex-direction: column;
+
+                align-items: center;
+
+            }
+
+
+            input {
+
+                width: 95%;
+
+            }
+
+
+
+            button {
+
+                margin: 15px 0 0;
+
+                width: 95%;
+
+            }
+
+
+
+            .video-info {
+
+                flex-direction: column;
+
+            }
+
+
+            .thumbnail {
+
+                width: 200px;
+
+                height: 120px;
+
+            }
+
+
+
+        }
+    </style>
 
 
 </head>
+
 
 
 <body>
 
 
 
-<!-- 导航 -->
-
-<div class="navbar">
+    <div class="navbar">
 
 
-<div class="logo">
+        <div class="logo">
 
-Social Downloader
+            Social Downloader
+
+        </div>
+
+
+        <div class="nav">
+
+
+            <a href="/" class="active">
+                YouTube
+            </a>
+
+
+            <a href="/tiktok-downloader">
+                TikTok
+            </a>
+
+
+            <a href="/facebook-downloader">
+                Facebook
+            </a>
+
+
+            <a href="/instagram-downloader">
+                Instagram
+            </a>
+
+
+            <a href="/twitter-downloader">
+                Twitter
+            </a>
+
+
+            <a href="/pinterest-downloader">
+                Pinterest
+            </a>
+
+
+            <a href="/about">
+                About
+            </a>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+    <div class="container">
+
+
+
+        <!-- Adsense 300x250 -->
+
+        <div class="ad-box" id="adBox">
+
+            Ad Space 300x250
+
+        </div>
+
+
+
+
+        <h1>
+
+            Download Videos Online
+
+        </h1>
+
+
+
+        <p>
+
+            YouTube · TikTok · Facebook · Pinterest Video Downloader
+
+        </p>
+
+
+
+
+
+        <div class="search-box">
+
+
+            <input id="url" placeholder="Paste video URL here">
+
+
+            <button onclick="download()">
+
+                Download
+
+            </button>
+
+
+        </div>
+
+
+
+
+
+        <div id="result"></div>
+
+
+
+
+
+
+
+
+        <div class="cards">
+
+
+            <div class="card">
+
+                <h3>
+                    ▶ YouTube
+                </h3>
+
+                <p>
+                    MP4 Download
+                </p>
+
+            </div>
+
+
+
+            <div class="card">
+
+                <h3>
+                    ♪ TikTok
+                </h3>
+
+                <p>
+                    No watermark
+                </p>
+
+            </div>
+
+
+
+            <div class="card">
+
+                <h3>
+                    📘 Facebook
+                </h3>
+
+                <p>
+                    Download FB Videos
+                </p>
+
+            </div>
+
+
+
+            <div class="card">
+
+                <h3>
+                    📌 Twitter
+                </h3>
+
+                <p>
+                    Save Video
+                </p>
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+    </div>
+
+
+
+
+    <div class="footer">
+
+        © 2026 Social Downloader
+
+    </div>
+
+
+
+
+
+    <div class="notice" id="notice">
+
+        Loading...
+
+    </div>
+
+
+
+
+
+
+
+    <script>
+
+
+
+        function showNotice(msg) {
+
+
+            let box = document.getElementById("notice");
+
+            box.innerHTML = msg;
+
+            box.style.display = "block";
+
+
+            setTimeout(() => {
+
+                box.style.display = "none";
+
+
+            }, 3000);
+
+
+        }
+
+
+
+
+
+
+
+        async function download() {
+
+
+
+            let url = document.getElementById("url").value;
+
+
+
+            if (!url) {
+
+                showNotice("Please enter video URL");
+
+                return;
+
+            }
+
+
+
+
+            showNotice("Processing...");
+
+
+
+            let res = await fetch(
+
+                "/download",
+
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+
+                        "Content-Type": "application/json"
+
+
+                    },
+
+                    body: JSON.stringify({
+
+                        url: url
+
+                    })
+
+
+                }
+
+
+
+            );
+
+
+
+            let data = await res.json();
+
+
+
+
+
+            if (data.success) {
+
+
+
+                document.getElementById("result").innerHTML = `
+
+<div class="result-card">
+
+
+<div class="video-info">
+
+
+<img class="thumbnail"
+
+src="${data.thumbnail}">
+
+
+<div class="title">
+
+${data.title}
 
 </div>
 
 
-<div class="nav">
+</div>
 
-<a href="/">
-YouTube
+
+
+<div class="download-list">
+
+
+<a href="${data.thumbnail}" target="_blank">
+
+🖼 Download Thumbnail
+
 </a>
 
 
-<a href="/tiktok-downloader">
-TikTok
+
+<a href="${data.download_url}" target="_blank">
+
+🎬 Download Video
+
 </a>
 
 
-<a href="/facebook-downloader">
-Facebook
-</a>
-<a href="/instagram-downloader">
-Instagram
-</a>
-<a href="/twitter-downloader">
-twitter
-</a>
 
-<a href="/pinterest-downloader">
-Pinterest
-</a>
+<a href="${data.download_url}" target="_blank">
 
-<a href="/about">
-About
+🎵 Download Audio
+
 </a>
 
 
-</div>
-
 
 </div>
 
 
-
-
-
-<div class="container">
-
-
-<h1>
-Download Videos Online
-</h1>
-
-
-<p>
-YouTube · TikTok · Facebook · Pinterest Video Downloader
-</p>
-
-
-
-<input 
-id="url"
-placeholder="Paste video URL here">
-
-
-<button onclick="download()">
-
-Download
-
-</button>
-
-
-
-<p id="result"></p>
-
-
-
-
-<div class="cards">
-
-
-<div class="card">
-
-<h3>
-▶ YouTube
-</h3>
-
-<p>
-MP4 Video Download
-</p>
-
 </div>
 
 
+`;
 
-<div class="card">
 
-<h3>
-♪ TikTok
-</h3>
 
-<p>
-Save TikTok Videos
-</p>
+            }
 
-</div>
+            else {
 
 
+                showNotice(data.error || "Download failed");
 
-<div class="card">
 
-<h3>
-📘 Facebook
-</h3>
+            }
 
-<p>
-Download FB Videos
-</p>
 
-</div>
 
+        }
 
 
-<div class="card">
 
-<h3>
-📌 Pinterest
-</h3>
 
-<p>
-Save Pinterest Video
-</p>
+    </script>
 
-</div>
-
-
-
-</div>
-
-<div class="container">
-  
-<h2>
-
-How to download?
-
-</h2>
-
-
-<p>
-
-1. Copy video URL
-
-</p>
-
-
-<p>
-
-2. Paste link above
-
-</p>
-
-
-<p>
-
-3. Click download
-
-</p>
-  
-</div>
-
-
-</div>
-<div class="footer">
-
-
-© 2026 Social Downloader
-
-</div>
-
-
-
-
-
-<script>
-
-
-async function download(){
-
-
-let url =
-document.getElementById("url").value;
-
-
-
-let res =
-await fetch(
-"/download",
-{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":
-"application/json"
-
-},
-
-body:
-JSON.stringify(
-{
-url:url
-}
-)
-
-});
-
-
-
-let data =
-await res.json();
-
-
-
-if(data.video){
-
-document.getElementById("result").innerHTML =
-
-'<a href="'+data.video+'" target="_blank">Download Video</a>';
-
-}
-
-else{
-
-document.getElementById("result").innerHTML =
-"Video not found";
-
-}
-
-
-}
-
-
-
-</script>
 
 
 </body>
+
 
 </html>

@@ -1,39 +1,46 @@
-from fastapi import APIRouter, Form
-from fastapi.responses import FileResponse
+from fastapi import APIRouter
+from pydantic import BaseModel
+from fastapi.concurrency import run_in_threadpool
 
-from services.downloader import download_video
-
+from services.downloader import get_video_info
 
 
 router = APIRouter()
 
 
 
+class DownloadRequest(BaseModel):
+
+    url: str
+
+
+
+
+
 @router.post("/download")
 async def download(
-
-    url:str = Form(...)
-
+    request: DownloadRequest
 ):
-
 
     try:
 
-
-        filepath = download_video(
-            url
+        result = await run_in_threadpool(
+            get_video_info,
+            request.url
         )
 
 
-        return FileResponse(
+        return {
 
-            filepath,
+            "success": True,
 
-            filename="video.mp4",
+            "title": result.get("title"),
 
-            media_type="video/mp4"
+            "thumbnail": result.get("thumbnail"),
 
-        )
+            "download_url": result.get("download_url")
+
+        }
 
 
     except Exception as e:
@@ -41,7 +48,9 @@ async def download(
 
         return {
 
-            "error":
-            str(e)
+
+            "success": False,
+
+            "error": str(e)
 
         }

@@ -9,7 +9,13 @@ app = FastAPI(title="Online Video Downloader")
 app.include_router(router)
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
+app.mount(
+    "/downloads",
+    StaticFiles(
+        directory="static/downloads"
+    ),
+    name="downloads"
+)
 
 
 @app.get("/")

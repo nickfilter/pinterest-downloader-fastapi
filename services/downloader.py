@@ -1,83 +1,226 @@
-import yt_dlp
 import os
-import uuid
+import yt_dlp
+import traceback
+
+BASE_DIR = os.path.dirname(
+    os.path.dirname(__file__)
+)
 
 
-DOWNLOAD_DIR = "downloads"
-
-
-os.makedirs(
-    DOWNLOAD_DIR,
-    exist_ok=True
+COOKIE_FILE = os.path.join(
+    BASE_DIR,
+    "cookies.txt"
 )
 
 
 
-def download_video(url):
+def get_video_info(url):
 
 
-    filename = str(uuid.uuid4())
-
-
-    output = (
-        f"{DOWNLOAD_DIR}/"
-        f"{filename}.%(ext)s"
+    is_youtube = (
+        "youtube.com" in url
+        or
+        "youtu.be" in url
     )
+
 
 
     options = {
 
 
-        "outtmpl": output,
-
-
+        # 只解析，不下载
         "format":
         "bestvideo+bestaudio/best",
 
 
-        "merge_output_format":
-        "mp4",
 
-
+        # 禁止播放列表
         "noplaylist":
         True,
 
 
-        "quiet":
-        True
+
+        # 超时
+        "socket_timeout":
+        60,
+
+
+
+        # 代理
+        "proxy":
+        "http://127.0.0.1:10808",
+
+
+
+        # 不显示颜色日志
+        "no_color":
+        True,
+
+
+
+        # YouTube优化
+        "extractor_args":{
+
+
+            "youtube":{
+
+
+                "player_client":[
+
+                    "android",
+                    "web"
+
+                ]
+
+            }
+
+
+        }
+
 
     }
 
 
-    with yt_dlp.YoutubeDL(options) as ydl:
+
+    # 只有YouTube使用cookies
+
+    if is_youtube and os.path.exists(COOKIE_FILE):
 
 
-        info = ydl.extract_info(
-            url,
-            download=True
-        )
+        options["cookiefile"] = COOKIE_FILE
 
 
-        file_path = ydl.prepare_filename(
-            info
-        )
 
 
-    if file_path.endswith(".webm"):
+    try:
 
-        new_path = file_path.replace(
-            ".webm",
-            ".mp4"
-        )
 
-        if os.path.exists(file_path):
+        with yt_dlp.YoutubeDL(options) as ydl:
 
-            os.rename(
-                file_path,
-                new_path
+
+            info = ydl.extract_info(
+
+                url,
+
+                download=False
+
             )
 
-        file_path = new_path
 
 
-    return file_path
+            formats = info.get(
+                "formats",
+                []
+            )
+
+
+
+            video_url = None
+
+
+
+            audio_url = None
+
+
+
+
+            # 找mp4视频
+
+            for f in reversed(formats):
+
+
+                if (
+
+                    f.get("vcodec") != "none"
+
+                    and
+
+                    f.get("acodec") != "none"
+
+                    and
+
+                    f.get("ext") == "mp4"
+
+                ):
+
+
+                    video_url = f.get(
+                        "url"
+                    )
+
+                    break
+
+
+
+
+            # 找音频
+
+
+            for f in reversed(formats):
+
+
+                if (
+
+                    f.get("acodec") != "none"
+
+                    and
+
+                    f.get("vcodec") == "none"
+
+                ):
+
+
+                    audio_url = f.get(
+                        "url"
+                    )
+
+                    break
+
+
+
+
+            # 没找到使用默认
+
+
+            if not video_url:
+
+                video_url = info.get(
+                    "url"
+                )
+
+
+
+            if not audio_url:
+
+                audio_url = video_url
+
+
+
+
+            return {
+
+    "title": info.get("title") or "Video",
+
+    "thumbnail": info.get("thumbnail"),
+
+    "download_url": video_url or info.get("url")
+
+}
+
+
+
+    except Exception as e:
+
+        # 打印完整错误到服务器控制台
+        traceback.print_exc()
+
+        return {
+
+
+            "success":
+            False,
+
+
+            "error": "Download failed. Please try again."
+
+        }
