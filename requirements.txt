@@ -1,7 +1,6 @@
-
-fastapi
-uvicorn
-requests
-jinja2
-python-multipart
-yt-dlp
+# 由 pyproject.toml 维护（uv export --no-dev），请勿在此直接增删
+fastapi>=0.141.1
+uvicorn>=0.52.0
+jinja2>=3.1.6
+python-multipart>=0.0.32
+yt-dlp>=2026.7.4

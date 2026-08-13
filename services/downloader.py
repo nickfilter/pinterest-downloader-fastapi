@@ -1,226 +1,94 @@
 import os
+import uuid
+from urllib.parse import urlparse
+
 import yt_dlp
-import traceback
 
-BASE_DIR = os.path.dirname(
-    os.path.dirname(__file__)
-)
-
-
-COOKIE_FILE = os.path.join(
-    BASE_DIR,
-    "cookies.txt"
-)
-
-
-
-def get_video_info(url):
-
-
-    is_youtube = (
-        "youtube.com" in url
-        or
-        "youtu.be" in url
-    )
-
-
-
-    options = {
-
-
-        # 只解析，不下载
-        "format":
-        "bestvideo+bestaudio/best",
-
-
-
-        # 禁止播放列表
-        "noplaylist":
-        True,
-
-
-
-        # 超时
-        "socket_timeout":
-        60,
-
-
-
-        # 代理
-        "proxy":
-        "http://127.0.0.1:10808",
-
-
-
-        # 不显示颜色日志
-        "no_color":
-        True,
-
-
-
-        # YouTube优化
-        "extractor_args":{
-
-
-            "youtube":{
-
-
-                "player_client":[
-
-                    "android",
-                    "web"
-
-                ]
-
-            }
-
-
-        }
-
-
-    }
-
-
-
-    # 只有YouTube使用cookies
-
-    if is_youtube and os.path.exists(COOKIE_FILE):
-
-
-        options["cookiefile"] = COOKIE_FILE
-
-
-
-
-    try:
-
-
-        with yt_dlp.YoutubeDL(options) as ydl:
-
-
-            info = ydl.extract_info(
-
-                url,
-
-                download=False
-
-            )
-
-
-
-            formats = info.get(
-                "formats",
-                []
-            )
-
-
-
-            video_url = None
-
-
-
-            audio_url = None
-
-
-
-
-            # 找mp4视频
-
-            for f in reversed(formats):
-
-
-                if (
-
-                    f.get("vcodec") != "none"
-
-                    and
-
-                    f.get("acodec") != "none"
-
-                    and
-
-                    f.get("ext") == "mp4"
-
-                ):
-
-
-                    video_url = f.get(
-                        "url"
-                    )
-
-                    break
-
-
-
-
-            # 找音频
-
-
-            for f in reversed(formats):
-
-
-                if (
-
-                    f.get("acodec") != "none"
-
-                    and
-
-                    f.get("vcodec") == "none"
-
-                ):
-
-
-                    audio_url = f.get(
-                        "url"
-                    )
-
-                    break
-
-
-
-
-            # 没找到使用默认
-
-
-            if not video_url:
-
-                video_url = info.get(
-                    "url"
-                )
-
-
-
-            if not audio_url:
-
-                audio_url = video_url
-
-
-
-
-            return {
-
-    "title": info.get("title") or "Video",
-
-    "thumbnail": info.get("thumbnail"),
-
-    "download_url": video_url or info.get("url")
-
+# 下载目录，可用环境变量覆盖
+DOWNLOAD_DIR = os.environ.get("DOWNLOAD_DIR", "downloads")
+
+# 支持的平台域名白名单（防 SSRF：仅允许访问这些域名，禁止内网/任意地址）
+ALLOWED_DOMAINS = {
+    "youtube.com",
+    "youtu.be",
+    "tiktok.com",
+    "facebook.com",
+    "fb.watch",
+    "instagram.com",
+    "twitter.com",
+    "x.com",
+    "pinterest.com",
 }
 
+# 基于代码位置定位 cookie 文件，避免依赖进程工作目录
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+COOKIE_FILE = os.path.join(BASE_DIR, "cookies.txt")
 
 
-    except Exception as e:
-
-        # 打印完整错误到服务器控制台
-        traceback.print_exc()
-
-        return {
+class UnsupportedUrlError(Exception):
+    """URL 不在支持范围内（协议不对 / 域名不在白名单 / 非法）。"""
 
 
-            "success":
-            False,
+def validate_url(url: str) -> None:
+    """校验 URL：仅允许 http/https 且域名在白名单内。"""
+    if not url or len(url) > 2048:
+        raise UnsupportedUrlError("Invalid URL")
+
+    parsed = urlparse(url)
+    if parsed.scheme not in ("http", "https"):
+        raise UnsupportedUrlError("Only http/https URLs are supported")
+
+    hostname = (parsed.hostname or "").lower().rstrip(".")
+    if not hostname:
+        raise UnsupportedUrlError("Invalid URL")
+
+    if not any(
+        hostname == domain or hostname.endswith("." + domain)
+        for domain in ALLOWED_DOMAINS
+    ):
+        raise UnsupportedUrlError("This website is not supported")
 
 
-            "error": "Download failed. Please try again."
+def _hostname(url: str) -> str:
+    return (urlparse(url).hostname or "").lower()
 
-        }
+
+def _is_youtube(hostname: str) -> bool:
+    return hostname == "youtube.com" or hostname.endswith(".youtube.com") or hostname == "youtu.be"
+
+
+def get_video_info(url: str) -> dict:
+    """解析并下载视频，返回标题/缩略图/本地下载路径。"""
+    validate_url(url)
+
+    os.makedirs(DOWNLOAD_DIR, exist_ok=True)
+
+    filename = f"{uuid.uuid4()}.mp4"
+    filepath = os.path.join(DOWNLOAD_DIR, filename)
+
+    options = {
+        "format": "best[ext=mp4]/best",
+        "outtmpl": filepath,
+        "merge_output_format": "mp4",
+        "noplaylist": True,
+        "socket_timeout": 60,
+        "no_color": True,
+    }
+
+    # 仅 YouTube 且 cookie 文件存在时启用登录态
+    if _is_youtube(_hostname(url)) and os.path.exists(COOKIE_FILE):
+        options["cookiefile"] = COOKIE_FILE
+
+    # 代理可选，通过 PROXY_URL 环境变量配置（如 http://127.0.0.1:10808）
+    proxy = os.environ.get("PROXY_URL")
+    if proxy:
+        options["proxy"] = proxy
+
+    with yt_dlp.YoutubeDL(options) as ydl:
+        info = ydl.extract_info(url, download=True)
+
+    return {
+        "title": info.get("title") or "Video",
+        "thumbnail": info.get("thumbnail"),
+        "download_url": "/downloads/" + filename,
+    }

@@ -752,6 +752,38 @@
 
 
 
+        function escapeHtml(str) {
+
+
+
+            return String(str == null ? "" : str)
+
+
+
+                .replace(/&/g, "&amp;")
+
+
+
+                .replace(/</g, "&lt;")
+
+
+
+                .replace(/>/g, "&gt;")
+
+
+
+                .replace(/"/g, "&quot;")
+
+
+
+                .replace(/'/g, "&#39;");
+
+
+
+        }
+
+
+
         function showNotice(msg) {
 
 
@@ -834,6 +866,11 @@
 
             let data = await res.json();
 
+            if (!res.ok) {
+                showNotice(data.detail || "Download failed");
+                return;
+            }
+
 
 
 
@@ -852,12 +889,12 @@
 
 <img class="thumbnail"
 
-src="${data.thumbnail}">
+src="${escapeHtml(data.thumbnail)}">
 
 
 <div class="title">
 
-${data.title}
+${escapeHtml(data.title)}
 
 </div>
 
@@ -869,14 +906,6 @@ ${data.title}
 <div class="download-list">
 
 
-<a href="${data.thumbnail}" target="_blank">
-
-🖼 Download Thumbnail
-
-</a>
-
-
-
 <a href="${data.download_url}" target="_blank">
 
 🎬 Download Video
@@ -885,11 +914,7 @@ ${data.title}
 
 
 
-<a href="${data.download_url}" target="_blank">
 
-🎵 Download Audio
-
-</a>
 
 
 

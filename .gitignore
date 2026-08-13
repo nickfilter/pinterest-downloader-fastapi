@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# 敏感文件：包含真实登录 Cookie，禁止提交
+cookies.txt
+
+# 下载产物
+downloads/
+static/downloads/
+
+# IDE
+.idea/
+.vscode/
