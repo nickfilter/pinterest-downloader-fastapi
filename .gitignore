@@ -10,6 +10,13 @@ cookies.txt
 downloads/
 static/downloads/
 
+# 统计数据与日志
+stats.db
+stats.db-wal
+stats.db-shm
+server.log
+server_err.log
+
 # IDE
 .idea/
 .vscode/

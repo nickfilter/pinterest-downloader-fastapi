@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-        Social Video Downloader
+        {{ site_title }}
     </title>
 
 
@@ -27,7 +27,7 @@
 
             margin: 0;
 
-            background: #f7f7f7;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) fixed;
 
             min-height: 100vh;
 
@@ -43,7 +43,7 @@
 
         .navbar {
 
-            background: #111;
+            background: linear-gradient(135deg, #4f46e5, #9333ea);
 
             padding: 15px 25px;
 
@@ -55,6 +55,8 @@
 
             flex-wrap: wrap;
 
+            position: relative;
+
         }
 
 
@@ -65,6 +67,10 @@
             font-size: 22px;
 
             font-weight: bold;
+
+            position: relative;
+
+            z-index: 10;
 
         }
 
@@ -103,7 +109,7 @@
 
         .nav a:hover {
 
-            background: #333;
+            background: rgba(255, 255, 255, .15);
 
         }
 
@@ -113,7 +119,7 @@
 
             transform: scale(.92);
 
-            background: #e60023;
+            background: rgba(255, 255, 255, .3);
 
         }
 
@@ -121,7 +127,30 @@
 
         .nav a.active {
 
-            background: #e60023;
+            background: rgba(255, 255, 255, .25);
+
+        }
+
+
+        /* 汉堡按钮（仅移动端显示） */
+
+        .menu-toggle {
+
+            display: none;
+
+            background: none;
+
+            border: 0;
+
+            color: #fff;
+
+            font-size: 26px;
+
+            cursor: pointer;
+
+            margin-left: auto;
+
+            padding: 4px 10px;
 
         }
 
@@ -152,22 +181,132 @@
 
             margin: 20px auto;
 
-            background: #ddd;
+            background: linear-gradient(135deg, #eef2ff, #f5e9ff);
 
             display: flex;
+
+            flex-direction: column;
 
             align-items: center;
 
             justify-content: center;
 
-            color: #888;
+            gap: 6px;
 
-            font-size: 14px;
+            color: #5b21b6;
+
+            font-size: 15px;
+
+            border: 1px dashed #c4b5fd;
+
+            border-radius: 8px;
+
+        }
+
+        .ad-box .ad-title {
+
+            font-weight: bold;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+
+        }
+
+        .ad-box .ad-sub {
+
+            font-size: 12px;
+
+            color: #7c6c9e;
 
         }
 
 
-        /* 后期 Adsense 替换 */
+        /* 加载弹窗（内含广告位，点击下载后弹出） */
+
+        .modal {
+
+            display: none;
+
+            position: fixed;
+
+            top: 0;
+
+            left: 0;
+
+            width: 100%;
+
+            height: 100%;
+
+            background: rgba(0, 0, 0, .6);
+
+            z-index: 1000;
+
+            align-items: center;
+
+            justify-content: center;
+
+        }
+
+
+        .modal-box {
+
+            background: #fff;
+
+            border-radius: 12px;
+
+            padding: 24px 20px;
+
+            text-align: center;
+
+            max-width: 360px;
+
+            width: 90%;
+
+        }
+
+
+        .modal-box .ad-box {
+
+            margin: 0 auto 12px;
+
+        }
+
+        .modal-box p {
+
+            color: #4b5563;
+
+        }
+
+
+        .spinner {
+
+            width: 36px;
+
+            height: 36px;
+
+            margin: 10px auto;
+
+            border: 4px solid #eee;
+
+            border-top-color: #7c3aed;
+
+            border-radius: 50%;
+
+            animation: spin 1s linear infinite;
+
+        }
+
+
+        @keyframes spin {
+
+            to {
+
+                transform: rotate(360deg);
+
+            }
+
+        }
 
 
 
@@ -176,13 +315,17 @@
 
             font-size: 42px;
 
+            color: white;
+
+            text-shadow: 0 2px 12px rgba(0, 0, 0, .25);
+
         }
 
 
 
         p {
 
-            color: #666;
+            color: rgba(255, 255, 255, .92);
 
         }
 
@@ -211,9 +354,11 @@
 
             font-size: 16px;
 
-            border: 1px solid #ddd;
+            border: 1px solid #d8c7ff;
 
             border-radius: 8px;
+
+            color: #1f2937;
 
         }
 
@@ -225,7 +370,7 @@
 
             margin-left: 10px;
 
-            background: #e60023;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
 
             color: white;
 
@@ -241,7 +386,9 @@
 
         button:hover {
 
-            opacity: .85;
+            opacity: .92;
+
+            box-shadow: 0 4px 15px rgba(124, 58, 237, .4);
 
         }
 
@@ -266,7 +413,7 @@
 
             border-radius: 12px;
 
-            box-shadow: 0 2px 10px #ddd;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, .25);
 
 
         }
@@ -334,7 +481,7 @@
 
             padding: 12px;
 
-            background: #111;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
 
             color: white;
 
@@ -348,7 +495,7 @@
 
         .download-list a:hover {
 
-            background: #e60023;
+            filter: brightness(1.12);
 
         }
 
@@ -361,15 +508,17 @@
 
         .cards {
 
-            display: flex;
+            display: grid;
 
-            justify-content: center;
+            grid-template-columns: repeat(2, 1fr);
 
             gap: 20px;
 
-            flex-wrap: wrap;
+            max-width: 480px;
 
-            margin-top: 40px;
+            margin: 40px auto 0;
+
+            justify-items: center;
 
         }
 
@@ -381,9 +530,29 @@
 
             padding: 20px;
 
-            width: 200px;
+            width: 100%;
+
+            max-width: 220px;
 
             border-radius: 10px;
+
+            text-align: center;
+
+        }
+
+        .card h3 {
+
+            color: #1f2937;
+
+            margin: 0 0 8px;
+
+        }
+
+        .card p {
+
+            color: #6b7280;
+
+            margin: 0;
 
         }
 
@@ -392,7 +561,7 @@
 
         .footer {
 
-            background: #111;
+            background: linear-gradient(135deg, #312e81, #581c87);
 
             color: white;
 
@@ -412,6 +581,8 @@
 
         .notice {
 
+
+            color: #333;
 
             display: none;
 
@@ -449,9 +620,40 @@
 
 
 
+            .menu-toggle {
+
+                display: block;
+
+                position: absolute;
+
+                right: 15px;
+
+                top: 50%;
+
+                transform: translateY(-50%);
+
+                margin-left: 0;
+
+                font-size: 28px;
+
+                padding: 6px 8px;
+
+            }
+
+
+
+
             .navbar {
 
-                flex-direction: column;
+                flex-wrap: wrap;
+
+                padding: 20px 16px;
+
+            }
+
+            .logo {
+
+                font-size: 24px;
 
             }
 
@@ -459,16 +661,30 @@
 
             .nav {
 
-                justify-content: center;
+                display: none;
 
-                margin-top: 15px;
+                width: 100%;
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                padding-top: 10px;
+
+            }
+
+
+
+            .nav.open {
+
+                display: flex;
 
             }
 
 
             .nav a {
 
-                margin: 5px;
+                margin: 4px 0;
 
             }
 
@@ -528,6 +744,34 @@
         }
     </style>
 
+    {% if ga4_id %}
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga4_id }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', '{{ ga4_id }}');
+    </script>
+    {% endif %}
+
+    {% if baidu_id %}
+    <!-- 百度统计 -->
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?" + "{{ baidu_id }}";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    {% endif %}
+
+    {% if adsense_client_id %}
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ adsense_client_id }}" crossorigin="anonymous"></script>
+    {% endif %}
 
 </head>
 
@@ -542,15 +786,20 @@
 
         <div class="logo">
 
-            Social Downloader
+            {{ site_title }}
 
         </div>
 
 
-        <div class="nav">
+        <button class="menu-toggle" id="menuToggle" onclick="toggleMenu()" aria-label="Menu">
+            ☰
+        </button>
 
 
-            <a href="/" class="active">
+        <div class="nav" id="nav">
+
+
+            <a href="/">
                 YouTube
             </a>
 
@@ -580,7 +829,7 @@
             </a>
 
 
-            <a href="/about">
+            <a href="/about" data-i18n="nav.about">
                 About
             </a>
 
@@ -600,18 +849,12 @@
 
 
 
-        <!-- Adsense 300x250 -->
-
-        <div class="ad-box" id="adBox">
-
-            Ad Space 300x250
-
-        </div>
+        <!-- 广告位已移至加载弹窗（点击 Download 后展示） -->
 
 
 
 
-        <h1>
+        <h1 data-i18n="hero.title">
 
             Download Videos Online
 
@@ -619,7 +862,7 @@
 
 
 
-        <p>
+        <p data-i18n="hero.subtitle">
 
             YouTube · TikTok · Facebook · Pinterest Video Downloader
 
@@ -632,10 +875,10 @@
         <div class="search-box">
 
 
-            <input id="url" placeholder="Paste video URL here">
+            <input id="url" placeholder="Paste video URL here" data-i18n-placeholder="hero.placeholder">
 
 
-            <button onclick="download()">
+            <button onclick="download()" data-i18n="hero.button">
 
                 Download
 
@@ -654,6 +897,46 @@
 
 
 
+        <!-- 加载弹窗：点击下载后弹出，内含广告位 -->
+
+        <div class="modal" id="modal">
+
+            <div class="modal-box">
+
+                <div class="ad-box">
+                    {% if adsense_client_id %}
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="{{ adsense_client_id }}"
+                         data-ad-slot="{{ adsense_ad_slot or '1234567890' }}"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                    {% else %}
+                    <span class="ad-title" data-i18n="ad.title">Advertisement</span>
+
+                    <span class="ad-sub" data-i18n="ad.sub">Sponsored &middot; Your Ad Here</span>
+                    {% endif %}
+                </div>
+
+                <div class="spinner"></div>
+
+                <p id="modalText" data-i18n="modal.processing">
+
+                    Processing, please wait...
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+
+
 
 
 
@@ -666,7 +949,7 @@
                     ▶ YouTube
                 </h3>
 
-                <p>
+                <p data-i18n="card.mp4">
                     MP4 Download
                 </p>
 
@@ -680,7 +963,7 @@
                     ♪ TikTok
                 </h3>
 
-                <p>
+                <p data-i18n="card.nowm">
                     No watermark
                 </p>
 
@@ -694,7 +977,7 @@
                     📘 Facebook
                 </h3>
 
-                <p>
+                <p data-i18n="card.fb">
                     Download FB Videos
                 </p>
 
@@ -708,7 +991,7 @@
                     📌 Twitter
                 </h3>
 
-                <p>
+                <p data-i18n="card.save">
                     Save Video
                 </p>
 
@@ -728,7 +1011,7 @@
 
     <div class="footer">
 
-        © 2026 Social Downloader
+        {{ footer_text }}
 
     </div>
 
@@ -736,7 +1019,7 @@
 
 
 
-    <div class="notice" id="notice">
+    <div class="notice" id="notice" data-i18n="notice.loading">
 
         Loading...
 
@@ -748,8 +1031,47 @@
 
 
 
+    <script src="/static/i18n.js"></script>
+
     <script>
 
+
+
+        // 根据当前路径高亮对应导航项
+        (function () {
+            var path = window.location.pathname;
+            var links = document.querySelectorAll(".nav a");
+            for (var i = 0; i < links.length; i++) {
+                var href = links[i].getAttribute("href");
+                var match;
+                if (href === "/") {
+                    // 主页 "/" 与 /youtube-downloader 均对应 YouTube
+                    match = (path === "/" || path === "/youtube-downloader");
+                } else {
+                    match = (path === href);
+                }
+                if (match) {
+                    links[i].classList.add("active");
+                }
+            }
+        })();
+
+
+
+        
+
+        function toggleMenu() {
+            var nav = document.getElementById("nav");
+            nav.classList.toggle("open");
+        }
+
+        function showModal() {
+            document.getElementById("modal").style.display = "flex";
+        }
+
+        function hideModal() {
+            document.getElementById("modal").style.display = "none";
+        }
 
 
         function escapeHtml(str) {
@@ -810,6 +1132,13 @@
 
 
 
+        // 防爬虫签名令牌（由服务端渲染时注入，5 分钟内有效）
+        const API_SIGN = {
+            ts: "{{ api_ts }}",
+            nonce: "{{ api_nonce }}",
+            sig: "{{ api_sig }}"
+        };
+
         async function download() {
 
 
@@ -820,7 +1149,7 @@
 
             if (!url) {
 
-                showNotice("Please enter video URL");
+                showNotice(t("js.empty"));
 
                 return;
 
@@ -829,11 +1158,13 @@
 
 
 
-            showNotice("Processing...");
+            showModal();
 
 
 
-            let res = await fetch(
+            let res;
+            try {
+                res = await fetch(
 
                 "/download",
 
@@ -844,7 +1175,13 @@
                     headers: {
 
 
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+
+                        "X-Api-Ts": API_SIGN.ts,
+
+                        "X-Api-Nonce": API_SIGN.nonce,
+
+                        "X-Api-Sig": API_SIGN.sig
 
 
                     },
@@ -864,10 +1201,25 @@
 
 
 
+            
+            } catch (e) {
+                hideModal();
+                showNotice(t("js.network"));
+                return;
+            }
+
+
             let data = await res.json();
 
             if (!res.ok) {
-                showNotice(data.detail || "Download failed");
+                hideModal();
+                if (res.status === 403) {
+                    // 令牌过期：提示用户并刷新页面重新获取令牌
+                    showNotice(data.detail || t("js.failed"));
+                    setTimeout(() => location.reload(), 1500);
+                    return;
+                }
+                showNotice(data.detail || t("js.failed"));
                 return;
             }
 
@@ -875,56 +1227,45 @@
 
 
 
+            hideModal();
+
             if (data.success) {
 
 
 
-                document.getElementById("result").innerHTML = `
-
-<div class="result-card">
-
-
-<div class="video-info">
-
-
-<img class="thumbnail"
-
-src="${escapeHtml(data.thumbnail)}">
-
-
-<div class="title">
-
-${escapeHtml(data.title)}
-
-</div>
-
-
-</div>
-
-
-
-<div class="download-list">
-
-
-<a href="${data.download_url}" target="_blank">
-
-🎬 Download Video
-
+                                let dlHtml = "";
+                if (data.image_url) {
+                    dlHtml = `
+<a href="${escapeHtml(data.image_url)}" target="_blank">
+${t("js.dlimg")}
+</a>`;
+                } else {
+                    dlHtml = `
+<a href="${escapeHtml(data.thumbnail)}" target="_blank">
+${t("js.dlthumb")}
 </a>
-
-
-
-
-
-
-
+<a href="${data.video_url}" target="_blank">
+${t("js.dlvideo")}
+</a>
+<a href="${data.audio_url ? data.audio_url : '#'}" target="_blank" style="${data.audio_url ? '' : 'pointer-events:none;opacity:.5'}">
+${t("js.dlaudio")}
+</a>`;
+                }
+                document.getElementById("result").innerHTML = `
+<div class="result-card">
+<div class="video-info">
+<img class="thumbnail"
+src="${escapeHtml(data.thumbnail)}">
+<div class="title">
+${escapeHtml(data.title)}
 </div>
-
-
 </div>
-
-
+<div class="download-list">
+${dlHtml}
+</div>
+</div>
 `;
+
 
 
 
@@ -933,7 +1274,7 @@ ${escapeHtml(data.title)}
             else {
 
 
-                showNotice(data.error || "Download failed");
+                showNotice(data.error || t("js.failed"));
 
 
             }

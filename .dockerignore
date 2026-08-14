@@ -1,0 +1,31 @@
+# 版本控制
+.git
+.gitignore
+.github
+
+# 虚拟环境与缓存
+.venv
+venv
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+
+# 本地数据与敏感文件（不应进入镜像）
+stats.db
+stats.db-journal
+*.db
+cookies.txt
+downloads/
+
+# 本地日志
+*.log
+
+# 临时脚本
+test_*.py
+*_tmp.py
+*.tmp
+
+# 构建产物
+Dockerfile
+.dockerignore

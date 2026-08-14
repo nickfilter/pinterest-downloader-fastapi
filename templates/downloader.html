@@ -1,226 +1,373 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-{{ title }}
+{{ title }} - {{ site_title }}
 </title>
-
-
 <meta name="description"
 content="{{ description }}">
 
-
 <style>
-body{
+* { box-sizing: border-box; }
 
-font-family:Arial;
-margin:0;
-background:#f7f7f7;
-
-min-height:100vh;
-
-display:flex;
-
-flex-direction:column;
-
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-.navbar{
-
-background:#111;
-padding:20px;
-
+/* 导航条 */
+.navbar {
+    background: linear-gradient(135deg, #4f46e5, #9333ea);
+    padding: 15px 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
 }
 
-
-.navbar a{
-
-color:white;
-margin:15px;
-text-decoration:none;
-
+.logo {
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
 }
 
-
-.container{
-
-text-align:center;
-
-padding:60px;
-
-flex:1;
-
+.nav {
+    display: flex;
+    flex-wrap: wrap;
 }
 
-.download-box{
-
-background:white;
-padding:30px;
-border-radius:10px;
-display:inline-block;
-
+.nav a {
+    color: white;
+    margin-left: 20px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 15px;
+    transition: .2s;
 }
 
+.nav a:hover { background: rgba(255, 255, 255, .15); }
+.nav a.active { background: rgba(255, 255, 255, .25); }
 
-input{
-
-width:400px;
-padding:15px;
-
+/* 汉堡按钮（仅移动端显示） */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: 0;
+    color: #fff;
+    font-size: 26px;
+    cursor: pointer;
+    margin-left: auto;
+    padding: 4px 10px;
 }
 
-
-button{
-
-padding:15px 30px;
-background:red;
-color:white;
-border:0;
-
+.container {
+    flex: 1;
+    text-align: center;
+    padding: 40px 20px;
+    max-width: 860px;
+    margin: 0 auto;
+    width: 100%;
 }
 
+h1 { font-size: 34px; margin-bottom: 6px; color: white; text-shadow: 0 2px 12px rgba(0, 0, 0, .25); }
+.sub { color: rgba(255, 255, 255, .92); margin: 0 0 36px; }
 
-.footer{
-
-background:#111;
-color:white;
-padding:30px;
-text-align:center;
-
+/* 步骤区 */
+.steps {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    text-align: left;
 }
 
+.step {
+    background: white;
+    border-radius: 12px;
+    padding: 22px 26px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    box-shadow: 0 2px 10px #e0e0e0;
+}
 
+.step-icon {
+    font-size: 40px;
+    background: #eef2ff;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.step-body { flex: 1; }
+
+.step-no {
+    display: inline-block;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    color: #fff;
+    border-radius: 20px;
+    padding: 2px 14px;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.step h3 { margin: 0 0 6px; font-size: 19px; }
+.step p { margin: 0; color: #666; line-height: 1.6; }
+
+/* 步骤示意图 */
+.mock {
+    background: #fafafa;
+    border: 1px dashed #ccc;
+    border-radius: 8px;
+    padding: 10px 14px;
+    min-width: 210px;
+    text-align: center;
+    font-size: 13px;
+    color: #555;
+    flex-shrink: 0;
+}
+
+.mock .mock-input {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px;
+    margin-bottom: 8px;
+    color: #aaa;
+}
+
+.mock .mock-btn {
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    color: #fff;
+    border-radius: 6px;
+    padding: 8px 16px;
+    display: inline-block;
+}
+
+/* 支持平台与格式 */
+.info-row {
+    display: flex;
+    gap: 16px;
+    margin-top: 36px;
+    flex-wrap: wrap;
+}
+
+.info-card {
+    flex: 1;
+    min-width: 240px;
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: left;
+    box-shadow: 0 2px 10px #e0e0e0;
+}
+
+.info-card h3 { margin-top: 0; }
+.info-card ul { margin: 0; padding-left: 20px; color: #555; line-height: 1.9; }
+
+.footer {
+    background: linear-gradient(135deg, #312e81, #581c87);
+    color: white;
+    padding: 25px;
+    text-align: center;
+}
+
+/* 手机 */
+@media(max-width:600px) {
+    .navbar { flex-wrap: wrap; }
+    .menu-toggle { display: block; }
+    .nav {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        padding-top: 10px;
+    }
+    .nav.open { display: flex; }
+    .nav a { margin: 4px 0; }
+
+    h1 { font-size: 26px; }
+    .step { flex-direction: column; text-align: center; }
+    .step-icon { margin: 0 auto; }
+    .mock { min-width: 100%; }
+}
 </style>
 
+{% if ga4_id %}
+<!-- Google Analytics 4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ ga4_id }}"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', '{{ ga4_id }}');
+</script>
+{% endif %}
+
+{% if baidu_id %}
+<!-- 百度统计 -->
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?" + "{{ baidu_id }}";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+{% endif %}
+
+{% if adsense_client_id %}
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ adsense_client_id }}" crossorigin="anonymous"></script>
+{% endif %}
 
 </head>
-
-
 <body>
-
 
 
 <div class="navbar">
 
+    <div class="logo">
+        {{ site_title }}
+    </div>
 
-<div class="logo">
+    <button class="menu-toggle" id="menuToggle" onclick="toggleMenu()" aria-label="Menu">
+        ☰
+    </button>
 
-Social Downloader
+    <div class="nav" id="nav">
 
-</div>
+        <a href="/">YouTube</a>
+        <a href="/tiktok-downloader">TikTok</a>
+        <a href="/facebook-downloader">Facebook</a>
+        <a href="/instagram-downloader">Instagram</a>
+        <a href="/twitter-downloader">Twitter</a>
+        <a href="/pinterest-downloader">Pinterest</a>
+        <a href="/about" data-i18n="nav.about">About</a>
 
-
-<div class="nav">
-
-<a href="/">
-YouTube
-</a>
-
-
-<a href="/tiktok-downloader">
-TikTok
-</a>
-
-
-<a href="/facebook-downloader">
-Facebook
-</a>
-
-
-<a href="/instagram-downloader">
-Instagram
-</a>
-
-<a href="/twitter-downloader">
-twitter
-</a>
-<a href="/pinterest-downloader">
-Pinterest
-</a>
-
+    </div>
 
 </div>
-
-
-</div>
-
-
 
 
 <div class="container">
 
+    <h1>{{ title }}</h1>
+    <p class="sub">{{ description }}</p>
 
-<h1>
-{{ title }}
-</h1>
+    <div class="steps">
 
+        <div class="step">
+            <div class="step-icon">🔗</div>
+            <div class="step-body">
+                <span class="step-no" data-i18n="step.1no">Step 1</span>
+                <h3 data-i18n="step.1title">复制视频链接</h3>
+                <p data-i18n="step.1desc">打开 YouTube / TikTok / Facebook / Instagram / Twitter / Pinterest，找到想下载的视频，复制浏览器地址栏中的完整链接（URL）。</p>
+            </div>
+            <div class="mock">
+                <div class="mock-input">https://www.youtube.com/watch?v=...</div>
+                <div class="mock-btn" data-i18n="step.1copy">复制链接</div>
+            </div>
+        </div>
 
-<p>
-{{ description }}
-</p>
+        <div class="step">
+            <div class="step-icon">📋</div>
+            <div class="step-body">
+                <span class="step-no" data-i18n="step.2no">Step 2</span>
+                <h3 data-i18n="step.2title">粘贴到输入框</h3>
+                <p data-i18n="step.2desc">返回本站主页，把链接粘贴到搜索框。支持任意一个平台，系统会自动识别来源网站。</p>
+            </div>
+            <div class="mock">
+                <div class="mock-input" data-i18n="step.2paste">📋 在此粘贴视频链接...</div>
+            </div>
+        </div>
 
+        <div class="step">
+            <div class="step-icon">⬇️</div>
+            <div class="step-body">
+                <span class="step-no" data-i18n="step.3no">Step 3</span>
+                <h3 data-i18n="step.3title">点击下载并保存</h3>
+                <p data-i18n="step.3desc">点击 Download 按钮，稍候片刻将弹出处理窗口；解析完成后即可下载视频、音频与缩略图，保存到本地。</p>
+            </div>
+            <div class="mock">
+                <div class="mock-btn" data-i18n="hero.button">⬇️ Download</div>
+            </div>
+        </div>
 
+    </div>
 
-<div class="download-box">
+    <div class="info-row">
 
+        <div class="info-card">
+            <h3 data-i18n="info.platform">支持平台</h3>
+            <ul>
+                <li>YouTube / YouTube Shorts</li>
+                <li data-i18n="tiktok.nowm">TikTok（无水印）</li>
+                <li>Facebook / FB Watch</li>
+                <li>Instagram Reels</li>
+                <li>Twitter / X</li>
+                <li>Pinterest</li>
+            </ul>
+        </div>
 
-<input placeholder="Paste video URL">
+        <div class="info-card">
+            <h3 data-i18n="info.downloads">下载内容</h3>
+            <ul>
+                <li data-i18n="d.thumb">🖼 视频缩略图（JPG）</li>
+                <li data-i18n="d.video">🎬 高清视频（MP4）</li>
+                <li data-i18n="d.audio">🎵 独立音频（M4A/WebM）</li>
+            </ul>
+        </div>
 
-
-<button>
-
-Download
-
-</button>
-
+    </div>
 
 </div>
-
-
-
-<h2>
-
-How to download?
-
-</h2>
-
-
-<p>
-
-1. Copy video URL
-
-</p>
-
-
-<p>
-
-2. Paste link above
-
-</p>
-
-
-<p>
-
-3. Click download
-
-</p>
-
-
-</div>
-
-
-
 
 
 <div class="footer">
 
-
-© 2026 Social Downloader
+    {{ footer_text }}
 
 </div>
 
+
+<script src="/static/i18n.js"></script>
+<script>
+    function toggleMenu() {
+        var nav = document.getElementById("nav");
+        nav.classList.toggle("open");
+    }
+
+    // 根据当前路径高亮对应导航项
+    (function () {
+        var path = window.location.pathname;
+        var links = document.querySelectorAll(".nav a");
+        for (var i = 0; i < links.length; i++) {
+            var href = links[i].getAttribute("href");
+            var match;
+            if (href === "/") {
+                match = (path === "/" || path === "/youtube-downloader");
+            } else {
+                match = (path === href);
+            }
+            if (match) {
+                links[i].classList.add("active");
+            }
+        }
+    })();
+</script>
 
 </body>
 

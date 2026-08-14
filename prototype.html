@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>产品原型图与流程图 - Social Downloader</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: "default" });
+</script>
+<style>
+  body { font-family: "Microsoft YaHei", Arial, sans-serif; background: #f4f4f6; margin: 0; padding: 24px; color: #333; }
+  h1 { text-align: center; color: #e60023; }
+  h2 { border-left: 5px solid #e60023; padding-left: 12px; margin-top: 40px; }
+  h3 { margin: 18px 0 8px; color: #555; }
+  .note { background: #fff8e6; border: 1px solid #f0d080; padding: 10px 14px; border-radius: 6px; margin: 10px 0; font-size: 13px; }
+
+  /* ===== 线框图通用 ===== */
+  .wf { background: #fff; border: 1px solid #ddd; border-radius: 8px; margin: 16px auto; max-width: 720px; box-shadow: 0 2px 6px rgba(0,0,0,.06); overflow: hidden; font-size: 13px; }
+  .wf-nav { background: #222; color: #fff; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; }
+  .wf-nav .logo { font-weight: bold; }
+  .wf-nav .links { display: flex; gap: 12px; }
+  .wf-nav .links span { color: #ccc; background: #333; padding: 3px 8px; border-radius: 4px; }
+  .wf-nav .links .active { background: #e60023; color: #fff; }
+  .wf-body { padding: 18px; text-align: center; }
+  .wf-ad { width: 300px; height: 80px; margin: 0 auto 16px; border: 2px dashed #bbb; color: #999; display: flex; align-items: center; justify-content: center; background: #fafafa; }
+  .wf-h1 { font-size: 24px; font-weight: bold; }
+  .wf-sub { color: #888; margin: 6px 0 14px; }
+  .wf-search { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; }
+  .wf-input { width: 320px; max-width: 70%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+  .wf-btn { background: #e60023; color: #fff; border: 0; padding: 10px 18px; border-radius: 6px; }
+  .wf-cards { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+  .wf-card { border: 1px solid #eee; border-radius: 8px; padding: 14px 18px; width: 130px; background: #fafafa; }
+  .wf-footer { background: #222; color: #888; text-align: center; padding: 12px; font-size: 12px; }
+
+  /* 结果卡片 */
+  .wf-result { display: flex; gap: 14px; text-align: left; border: 1px solid #eee; border-radius: 8px; padding: 14px; margin: 12px auto; max-width: 560px; background: #fff; align-items: center; }
+  .wf-thumb { width: 150px; height: 90px; background: linear-gradient(135deg,#f6d365,#fda085); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; flex-shrink: 0; }
+  .wf-dl { background: #111; color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 12px; }
+  .wf-tag { display: inline-block; background: #e60023; color: #fff; border-radius: 4px; padding: 2px 8px; font-size: 11px; }
+  .wf-about { text-align: left; max-width: 560px; margin: 0 auto; }
+  .wf-about li { margin: 8px 0; }
+
+  .mermaid { text-align: center; margin: 10px 0; }
+  .chart-wrap { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 16px; margin: 12px auto; max-width: 860px; overflow-x: auto; }
+</style>
+</head>
+<body>
+
+<h1>Social Downloader — 产品原型图与流程图</h1>
+
+<!-- ============ 一、原型图 ============ -->
+<h2>一、页面原型图（线框图）</h2>
+<p class="note">项目现状：主页 / 各平台落地页共用 <code>index.html</code> 模板（仅标题与描述不同）；About 页用 <code>downloader.html</code>。广告位为 300×250 Adsense 预留。</p>
+
+<h3>1. 主页 / 平台落地页（默认态）</h3>
+<div class="wf">
+  <div class="wf-nav">
+    <div class="logo">Social Downloader</div>
+    <div class="links">
+      <span class="active">YouTube</span><span>TikTok</span><span>Facebook</span>
+      <span>Instagram</span><span>Twitter</span><span>Pinterest</span><span>About</span>
+    </div>
+  </div>
+  <div class="wf-body">
+    <div class="wf-ad">广告位 300×250（Adsense）</div>
+    <div class="wf-h1">Download Videos Online</div>
+    <div class="wf-sub">YouTube · TikTok · Facebook · Pinterest Video Downloader</div>
+    <div class="wf-search">
+      <div class="wf-input">粘贴视频链接（URL）</div>
+      <div class="wf-btn">Download</div>
+    </div>
+    <div class="wf-cards">
+      <div class="wf-card">▶ YouTube<br><small>MP4 Download</small></div>
+      <div class="wf-card">♪ TikTok<br><small>No watermark</small></div>
+      <div class="wf-card">📘 Facebook<br><small>Download FB Videos</small></div>
+      <div class="wf-card">📌 Twitter<br><small>Save Video</small></div>
+    </div>
+  </div>
+  <div class="wf-footer">© 2026 Social Downloader</div>
+</div>
+
+<h3>2. 下载结果态（成功）</h3>
+<div class="wf">
+  <div class="wf-nav">
+    <div class="logo">Social Downloader</div>
+    <div class="links">
+      <span class="active">YouTube</span><span>TikTok</span><span>Facebook</span>
+      <span>Instagram</span><span>Twitter</span><span>Pinterest</span><span>About</span>
+    </div>
+  </div>
+  <div class="wf-body">
+    <div class="wf-ad">广告位 300×250（Adsense）</div>
+    <div class="wf-result">
+      <div class="wf-thumb">缩略图</div>
+      <div style="flex:1">
+        <div style="font-weight:bold;margin-bottom:6px">视频标题 <span class="wf-tag">success</span></div>
+        <div style="display:flex;gap:8px">
+          <span class="wf-dl">🎬 下载视频</span>
+        </div>
+      </div>
+    </div>
+    <p style="color:#888;font-size:12px">（成功态：展示缩略图 + 标题 + 下载链接；失败态：顶部浮层提示错误原因）</p>
+  </div>
+  <div class="wf-footer">© 2026 Social Downloader</div>
+</div>
+
+<h3>3. About / 使用说明页</h3>
+<div class="wf">
+  <div class="wf-nav">
+    <div class="logo">Social Downloader</div>
+    <div class="links">
+      <span>YouTube</span><span>TikTok</span><span>Facebook</span>
+      <span>Instagram</span><span>Twitter</span><span>Pinterest</span><span class="active">About</span>
+    </div>
+  </div>
+  <div class="wf-body">
+    <div class="wf-h1">How to use Downloader</div>
+    <div class="wf-about">
+      <h3>如何下载？</h3>
+      <ol>
+        <li>复制视频链接（URL）</li>
+        <li>将链接粘贴到上方输入框</li>
+        <li>点击 Download 按钮</li>
+      </ol>
+    </div>
+  </div>
+  <div class="wf-footer">© 2026 Social Downloader</div>
+</div>
+
+<!-- ============ 二、流程图 ============ -->
+<h2>二、流程图</h2>
+
+<h3>1. 用户下载流程</h3>
+<div class="chart-wrap">
+<div class="mermaid">
+flowchart TD
+    A[用户访问主页 / 任一平台落地页] --> B[粘贴视频 URL]
+    B --> C[点击 Download]
+    C --> D[前端 fetch 发送 POST /download]
+    D --> E{服务端 URL 校验<br/>协议 + 域名白名单}
+    E -- 非法/不在白名单 --> E1[返回 400<br/>前端浮层提示错误]
+    E -- 合法 --> F[run_in_threadpool 调 downloader]
+    F --> G[yt-dlp extract_info 解析并下载<br/>输出到 downloads/]
+    G --> H[返回 title / thumbnail / download_url]
+    H --> I[前端渲染结果卡片]
+    I --> J[用户点击 下载视频]
+    J --> K[浏览器请求 /downloads/xxx.mp4]
+    K --> L[StaticFiles 静态服务返回文件<br/>触发浏览器下载]
+    E1 --> M[结束]
+    L --> M
+</div>
+</div>
+
+<h3>2. 系统架构图</h3>
+<div class="chart-wrap">
+<div class="mermaid">
+flowchart LR
+    U[浏览器] --> F[FastAPI 应用<br/>uvicorn]
+    F --> T[Jinja2 模板<br/>templates/index.html]
+    F --> S[静态资源<br/>static/]
+    F --> A[/download API<br/>api/download.py]
+    A --> D[downloader.py<br/>URL 校验 + 选项组装]
+    D --> Y[yt-dlp<br/>cookiefile / proxy / format]
+    Y --> P[目标平台<br/>YouTube / Pinterest / TikTok ...]
+    D --> DL[downloads/ 目录]
+    F --> M2[/downloads 静态挂载<br/>StaticFiles/]
+    DL --> M2
+    M2 --> U
+    CL[cleanup.py 后台任务<br/>定时删除过期文件] -.-> DL
+</div>
+</div>
+
+<h3>3. 下载文件生命周期（时序）</h3>
+<div class="chart-wrap">
+<div class="mermaid">
+sequenceDiagram
+    participant U as 用户
+    participant FE as 前端页面
+    participant API as /download API
+    participant DL as downloader.py
+    participant YT as yt-dlp
+    participant FS as downloads/ 存储
+
+    U->>FE: 输入 URL 并点击下载
+    FE->>API: POST /download {url}
+    API->>DL: run_in_threadpool(get_video_info)
+    DL->>YT: extract_info(url, download=True)
+    YT->>FS: 下载视频文件 (uuid.mp4)
+    YT-->>DL: 返回元数据
+    DL-->>API: {title, thumbnail, download_url}
+    API-->>FE: 200 {success:true, ...}
+    FE-->>U: 渲染结果卡片
+    U->>FS: 点击下载 → GET /downloads/uuid.mp4
+    Note over FS: 超过保留期(默认24h)<br/>被 cleanup.py 定时清理
+</div>
+</div>
+
+</body>
+</html>

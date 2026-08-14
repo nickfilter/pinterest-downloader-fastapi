@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理后台 - {{ site_title }}</title>
+<style>
+* { box-sizing: border-box; }
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) fixed;
+    display: flex;
+    flex-direction: column;
+}
+.navbar {
+    background: linear-gradient(135deg, #4f46e5, #9333ea);
+    padding: 15px 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.navbar .logo { color: white; font-size: 22px; font-weight: bold; }
+.navbar a.back { color: rgba(255,255,255,.9); text-decoration: none; font-size: 14px; padding: 8px 14px; border: 1px solid rgba(255,255,255,.4); border-radius: 8px; }
+.navbar a.back:hover { background: rgba(255,255,255,.15); }
+.container { flex: 1; max-width: 960px; width: 100%; margin: 0 auto; padding: 30px 20px; }
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.2);
+}
+.card h2 { margin: 0 0 18px; font-size: 20px; color: #312e81; }
+label { display: block; font-size: 13px; color: #6b7280; margin: 12px 0 6px; }
+input[type=password], input[type=text], textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d8c7ff;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1f2937;
+    font-family: Arial, sans-serif;
+}
+textarea {
+    min-height: 140px;
+    resize: vertical;
+    font-family: Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.5;
+}
+button {
+    margin-top: 16px;
+    padding: 10px 22px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+}
+button:hover { opacity: .92; box-shadow: 0 4px 15px rgba(124,58,237,.4); }
+button.logout {
+    background: #ef4444;
+    margin-top: 0;
+    margin-left: 10px;
+}
+.msg { margin-top: 10px; font-size: 13px; }
+.msg.ok { color: #16a34a; }
+.msg.err { color: #dc2626; }
+.hint { font-size: 12px; color: #9ca3af; margin-top: 4px; }
+.stat-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+.stat-box { flex: 1; min-width: 140px; background: linear-gradient(135deg, #eef2ff, #f5e9ff); border-radius: 10px; padding: 16px; text-align: center; }
+.stat-box .num { font-size: 28px; font-weight: bold; color: #5b21b6; }
+.stat-box .lbl { font-size: 13px; color: #7c6c9e; margin-top: 4px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid #f0eafc; word-break: break-all; }
+th { color: #7c6c9e; font-size: 12px; text-transform: uppercase; }
+td.url { max-width: 260px; }
+.badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 12px; }
+.badge.ok { background: #dcfce7; color: #16a34a; }
+.badge.fail { background: #fee2e2; color: #dc2626; }
+.empty { color: #9ca3af; text-align: center; padding: 20px 0; }
+.hidden { display: none; }
+.footer { background: linear-gradient(135deg, #312e81, #581c87); color: rgba(255,255,255,.8); padding: 18px; text-align: center; font-size: 13px; }
+.login-wrap { max-width: 400px; margin: 60px auto 0; }
+.login-wrap .card { text-align: center; }
+.login-wrap h2 { text-align: center; }
+.cred-box {
+    background: linear-gradient(135deg, #eef2ff, #f5e9ff);
+    border: 1px dashed #c4b5fd;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    text-align: left;
+    font-size: 14px;
+    color: #1f2937;
+    line-height: 1.8;
+}
+.cred-box b { color: #5b21b6; }
+</style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="logo">⚙ 管理后台</div>
+    <a class="back" href="/">← 返回首页</a>
+</div>
+
+<div class="container">
+
+    {% if not is_admin %}
+    <!-- 登录 -->
+    <div class="login-wrap">
+        <div class="card">
+            <h2>管理员登录</h2>
+            <div class="cred-box">
+                <div>用户名：<b>{{ admin_username }}</b></div>
+                {% if is_custom_password %}
+                <div>密码：<b>已自定义</b></div>
+                <div class="hint">请输入您修改后的管理密码登录</div>
+                {% else %}
+                <div>密码：<b>{{ admin_password }}</b></div>
+                <div class="hint">默认密码（可用环境变量 ADMIN_PASSWORD 配置），登录后请在「安全设置」中修改</div>
+                {% endif %}
+            </div>
+            <input type="password" id="password" placeholder="请输入管理密码" onkeydown="if(event.key==='Enter')doLogin()">
+            <button onclick="doLogin()">登 录</button>
+            <div class="msg err" id="loginMsg"></div>
+        </div>
+    </div>
+    {% else %}
+    <!-- 管理面板 -->
+    <div id="panel">
+        <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <h2 style="margin:0;">站点设置</h2>
+                <button class="logout" onclick="doLogout()">退出登录</button>
+            </div>
+            <label>网站标题名称</label>
+            <input type="text" id="siteTitle" placeholder="例如：Social Video Downloader">
+            <label>Footer 底部文字</label>
+            <input type="text" id="footerText" placeholder="例如：© 2026 Social Video Downloader">
+            <label>Google Analytics 4（GA4）Measurement ID</label>
+            <input type="text" id="ga4Id" placeholder="例如：G-XXXXXXXXXX">
+            <div class="hint">填写后前台页面自动加载 GA4 统计脚本，留空则不加载。</div>
+            <label>百度统计站点 ID</label>
+            <input type="text" id="baiduId" placeholder="例如：12345678">
+            <div class="hint">填写后前台页面自动加载百度统计脚本，留空则不加载。</div>
+            <button onclick="saveSettings()">保存设置</button>
+            <div class="msg" id="saveMsg"></div>
+        </div>
+
+        <div class="card">
+            <h2>安全设置（修改管理密码）</h2>
+            <label>当前密码</label>
+            <input type="password" id="oldPassword" autocomplete="current-password" placeholder="请输入当前管理密码">
+            <label>新密码（6-64 位）</label>
+            <input type="password" id="newPassword" autocomplete="new-password" placeholder="请输入新密码">
+            <label>确认新密码</label>
+            <input type="password" id="confirmPassword" autocomplete="new-password" placeholder="请再次输入新密码">
+            <div class="hint">密码以加盐哈希方式存储。修改成功后需重新登录，其他已登录会话将立即失效。</div>
+            <button onclick="changePassword()">修改密码</button>
+            <div class="msg" id="pwMsg"></div>
+        </div>
+
+        <div class="card">
+            <h2>下载配置</h2>
+            <label>代理地址（可选）</label>
+            <input type="text" id="proxyUrl" placeholder="例如：http://127.0.0.1:10808">
+            <div class="hint">留空则使用服务器环境变量 PROXY_URL，均无则不使用代理。</div>
+            <label>Cookie（Netscape 格式，多行粘贴）</label>
+            <textarea id="cookiesText" placeholder="# Netscape HTTP Cookie File&#10;# 解决 YouTube/Instagram 等平台的 403 拦截&#10;.youtube.com&#9;TRUE&#9;/&#9;TRUE&#9;2050-01-01&#9;CONSENT&#9;YES+1&#10;..."></textarea>
+            <div class="hint">留空则不使用 Cookie。保存后立即对全部平台生效。</div>
+            <button onclick="saveDownloadConfig()">保存下载配置</button>
+            <div class="msg" id="configMsg"></div>
+        </div>
+
+        <div class="card">
+            <h2>Cookie 检测与自动更新</h2>
+            <label>检测平台</label>
+            <select id="cookiePlatform" style="width:100%;padding:10px 12px;border:1px solid #d8c7ff;border-radius:8px;font-size:14px;color:#1f2937;">
+                <option value="youtube">YouTube</option>
+                <option value="instagram">Instagram</option>
+                <option value="pinterest">Pinterest</option>
+                <option value="tiktok">TikTok</option>
+                <option value="facebook">Facebook</option>
+                <option value="twitter">Twitter / X</option>
+            </select>
+            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+                <button onclick="testCookie(this)" style="margin-top:12px;">检测 Cookie 有效性</button>
+                <span class="hint" id="cookieCheckTime">尚未检测</span>
+            </div>
+            <div class="msg" id="cookieTestMsg"></div>
+
+            <hr style="border:none;border-top:1px dashed #e5d8ff;margin:18px 0;">
+            <label>Cookie API 地址（更新来源）</label>
+            <input type="text" id="cookieApiUrl" placeholder="例如：https://example.com/api/cookies">
+            <div class="hint">支持返回 Netscape 纯文本，或 JSON（键名 cookies / cookie / cookie_text / data）。留空不启用自动更新。</div>
+            <label>自动更新周期（小时，0=关闭）</label>
+            <input type="text" id="cookieAutoHours" placeholder="例如：6">
+            <div class="hint">到时间后后台自动从 API 拉取最新 Cookie 并立即生效。</div>
+            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+                <button onclick="updateCookieFromApi(this)" style="margin-top:12px;">立即从 API 更新 Cookie</button>
+                <span class="hint" id="cookieUpdateTime">尚未更新</span>
+            </div>
+            <div class="msg" id="cookieApiMsg"></div>
+        </div>
+
+        <div class="card">
+            <h2>广告配置（AdSense / ads.txt）</h2>
+            <label>AdSense 发布商 ID</label>
+            <input type="text" id="adsenseClientId" placeholder="例如：ca-pub-3940256099942544">
+            <div class="hint">Google AdSense 测试发布商 ID：ca-pub-3940256099942544。填写后前台自动加载 adsbygoogle.js 并在下载弹窗展示广告。</div>
+            <label>AdSense 广告单元 Slot ID</label>
+            <input type="text" id="adsenseAdSlot" placeholder="例如：1234567890（测试 ID 可留空，默认 1234567890）">
+            <div class="hint">广告单元的 slot ID，仅数字。留空时使用 1234567890。</div>
+            <label>ads.txt 内容</label>
+            <textarea id="adsTxt" style="min-height:120px;font-family:Consolas,monospace;font-size:12px;line-height:1.5;" placeholder="google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0&#10;# 每行一条授权声明，格式：域名, 发布商ID, 关系类型, 认证ID"></textarea>
+            <div class="hint">保存后立即生效，访问 /ads.txt 即可查看。用于声明广告授权，如 AdSense、Ad Exchange 等。</div>
+            <button onclick="saveAdsTxt()">保存广告配置</button>
+            <div class="msg" id="adsMsg"></div>
+        </div>
+
+        <div class="card">
+            <h2>管理员登录日志</h2>
+            <div class="stat-row">
+                <div class="stat-box"><div class="num" id="lgTodayOk">-</div><div class="lbl">今日成功</div></div>
+                <div class="stat-box"><div class="num" id="lgTodayFail" style="color:#dc2626;">-</div><div class="lbl">今日失败</div></div>
+                <div class="stat-box"><div class="num" id="lgTotalOk">-</div><div class="lbl">累计成功</div></div>
+                <div class="stat-box"><div class="num" id="lgTotalFail" style="color:#dc2626;">-</div><div class="lbl">累计失败</div></div>
+            </div>
+            <table>
+                <thead><tr><th>时间</th><th>IP</th><th>地理位置</th><th>设备</th><th>系统</th><th>浏览器</th><th>状态</th><th>说明</th></tr></thead>
+                <tbody id="loginLogBody"></tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>用户访问统计</h2>
+            <div class="stat-row">
+                <div class="stat-box"><div class="num" id="totalViews">-</div><div class="lbl">总访问次数</div></div>
+                <div class="stat-box"><div class="num" id="todayViews">-</div><div class="lbl">今日访问</div></div>
+                <div class="stat-box"><div class="num" id="todayUnique">-</div><div class="lbl">今日独立访客</div></div>
+                <div class="stat-box"><div class="num" id="totalUnique">-</div><div class="lbl">累计独立访客</div></div>
+            </div>
+            <table>
+                <thead><tr><th>页面路径</th><th>访问次数</th><th>最后访问</th></tr></thead>
+                <tbody id="viewsBody"></tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>每日统计</h2>
+            <table>
+                <thead><tr><th>日期</th><th>访问量</th><th>独立访客</th><th>下载量</th><th>独立下载用户</th></tr></thead>
+                <tbody id="dailyBody"></tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>最近访问明细（IP / 地理位置 / 设备）</h2>
+            <table>
+                <thead><tr><th>时间</th><th>IP</th><th>地理位置</th><th>设备</th><th>系统</th><th>浏览器</th><th>页面</th></tr></thead>
+                <tbody id="visitBody"></tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>下载统计</h2>
+            <div class="stat-row">
+                <div class="stat-box"><div class="num" id="dlTotal">-</div><div class="lbl">下载总次数</div></div>
+                <div class="stat-box"><div class="num" id="dlOk" style="color:#16a34a;">-</div><div class="lbl">成功</div></div>
+                <div class="stat-box"><div class="num" id="dlFail" style="color:#dc2626;">-</div><div class="lbl">失败</div></div>
+                <div class="stat-box"><div class="num" id="todayDl">-</div><div class="lbl">今日下载</div></div>
+                <div class="stat-box"><div class="num" id="todayDlUser">-</div><div class="lbl">今日下载用户</div></div>
+            </div>
+            <table>
+                <thead><tr><th>时间</th><th>IP</th><th>地理位置</th><th>设备</th><th>平台</th><th>链接</th><th>状态</th><th>错误信息</th></tr></thead>
+                <tbody id="dlBody"></tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="footer">{{ footer_text }}</div>
+
+<script>
+function escapeHtml(s) {
+    return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+async function doLogin() {
+    const pw = document.getElementById('password').value;
+    const msg = document.getElementById('loginMsg');
+    if (!pw) { msg.textContent = '请输入密码'; msg.className = 'msg err'; return; }
+    try {
+        const res = await fetch('/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: pw })
+        });
+        if (res.ok) { location.reload(); }
+        else {
+            const data = await res.json().catch(() => ({}));
+            msg.textContent = data.message || '登录失败';
+            msg.className = 'msg err';
+        }
+    } catch (e) {
+        msg.textContent = '网络错误';
+        msg.className = 'msg err';
+    }
+}
+
+function doLogout() { location.href = '/admin/logout'; }
+
+async function loadStats() {
+    try {
+        const res = await fetch('/admin/api/stats');
+        if (!res.ok) { location.reload(); return; }
+        const data = await res.json();
+
+        // 站点设置
+        document.getElementById('siteTitle').value = data.settings.site_title || '';
+        document.getElementById('footerText').value = data.settings.footer_text || '';
+        document.getElementById('ga4Id').value = data.settings.ga4_id || '';
+        document.getElementById('baiduId').value = data.settings.baidu_id || '';
+        document.getElementById('adsenseClientId').value = data.settings.adsense_client_id || '';
+        document.getElementById('adsenseAdSlot').value = data.settings.adsense_ad_slot || '';
+        document.getElementById('adsTxt').value = data.settings.ads_txt || '';
+
+        // 下载配置
+        document.getElementById('proxyUrl').value = data.settings.proxy_url || '';
+        document.getElementById('cookiesText').value = data.settings.cookies_text || '';
+
+        // Cookie 检测与 API 更新
+        document.getElementById('cookieApiUrl').value = data.settings.cookie_api_url || '';
+        document.getElementById('cookieAutoHours').value = data.settings.cookie_auto_update_hours || '0';
+        const checkAt = data.settings.cookie_checked_at;
+        const checkResult = data.settings.cookie_check_result;
+        document.getElementById('cookieCheckTime').textContent =
+            checkAt ? '上次检测：' + checkAt + (checkResult ? '（' + checkResult + '）' : '') : '尚未检测';
+        document.getElementById('cookieUpdateTime').textContent =
+            data.settings.cookie_updated_at ? '上次更新：' + data.settings.cookie_updated_at : '尚未更新';
+
+        // 管理员登录日志
+        const lgs = data.login_logs_summary || {};
+        document.getElementById('lgTodayOk').textContent = lgs.today_success ?? 0;
+        document.getElementById('lgTodayFail').textContent = lgs.today_failed ?? 0;
+        document.getElementById('lgTotalOk').textContent = lgs.total_success ?? 0;
+        document.getElementById('lgTotalFail').textContent = lgs.total_failed ?? 0;
+        const lb = document.getElementById('loginLogBody');
+        lb.innerHTML = '';
+        if (!data.login_logs.length) {
+            lb.innerHTML = '<tr><td colspan="8" class="empty">暂无登录记录</td></tr>';
+        } else {
+            data.login_logs.forEach(l => {
+                const geo = [l.country, l.region, l.city].filter(Boolean).join(' / ') || '-';
+                const tr = document.createElement('tr');
+                tr.innerHTML =
+                    '<td>' + escapeHtml(l.logged_at) + '</td>' +
+                    '<td>' + escapeHtml(l.ip || '-') + '</td>' +
+                    '<td>' + escapeHtml(geo) + '</td>' +
+                    '<td>' + escapeHtml(l.device || '-') + '</td>' +
+                    '<td>' + escapeHtml(l.os || '-') + '</td>' +
+                    '<td>' + escapeHtml(l.browser || '-') + '</td>' +
+                    '<td>' + (l.success ? '<span class="badge ok">成功</span>' : '<span class="badge fail">失败</span>') + '</td>' +
+                    '<td>' + escapeHtml(l.message || '-') + '</td>';
+                lb.appendChild(tr);
+            });
+        }
+
+        // 用户访问统计
+        document.getElementById('totalViews').textContent = data.page_views_total;
+        const vs = data.visits_summary || {};
+        document.getElementById('todayViews').textContent = vs.today_visits ?? 0;
+        document.getElementById('todayUnique').textContent = vs.today_unique_visitors ?? 0;
+        document.getElementById('totalUnique').textContent = vs.total_unique_visitors ?? 0;
+        const vb = document.getElementById('viewsBody');
+        vb.innerHTML = '';
+        if (!data.page_views.length) {
+            vb.innerHTML = '<tr><td colspan="3" class="empty">暂无访问数据</td></tr>';
+        } else {
+            data.page_views.forEach(v => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = '<td>' + escapeHtml(v.path) + '</td><td>' + v.count + '</td><td>' + escapeHtml(v.updated_at) + '</td>';
+                vb.appendChild(tr);
+            });
+        }
+
+        // 每日统计
+        const dailyBody = document.getElementById('dailyBody');
+        dailyBody.innerHTML = '';
+        if (!data.daily_stats.length) {
+            dailyBody.innerHTML = '<tr><td colspan="5" class="empty">暂无每日统计数据</td></tr>';
+        } else {
+            data.daily_stats.forEach(d => {
+                const tr = document.createElement('tr');
+                tr.innerHTML =
+                    '<td>' + escapeHtml(d.date) + '</td>' +
+                    '<td>' + d.visits + '</td>' +
+                    '<td>' + d.unique_visitors + '</td>' +
+                    '<td>' + d.downloads + '</td>' +
+                    '<td>' + d.unique_downloaders + '</td>';
+                dailyBody.appendChild(tr);
+            });
+        }
+
+        // 最近访问明细
+        const visitBody = document.getElementById('visitBody');
+        visitBody.innerHTML = '';
+        if (!data.recent_visits.length) {
+            visitBody.innerHTML = '<tr><td colspan="7" class="empty">暂无访问明细</td></tr>';
+        } else {
+            data.recent_visits.forEach(v => {
+                const geo = [v.country, v.region, v.city].filter(Boolean).join(' / ') || '-';
+                const tr = document.createElement('tr');
+                tr.innerHTML =
+                    '<td>' + escapeHtml(v.visited_at) + '</td>' +
+                    '<td>' + escapeHtml(v.ip || '-') + '</td>' +
+                    '<td>' + escapeHtml(geo) + '</td>' +
+                    '<td>' + escapeHtml(v.device || '-') + '</td>' +
+                    '<td>' + escapeHtml(v.os || '-') + '</td>' +
+                    '<td>' + escapeHtml(v.browser || '-') + '</td>' +
+                    '<td>' + escapeHtml(v.path || '-') + '</td>';
+                visitBody.appendChild(tr);
+            });
+        }
+
+        // 下载统计
+        document.getElementById('dlTotal').textContent = data.download_stats.total;
+        document.getElementById('dlOk').textContent = data.download_stats.success;
+        document.getElementById('dlFail').textContent = data.download_stats.failed;
+        document.getElementById('todayDl').textContent = vs.today_downloads ?? 0;
+        document.getElementById('todayDlUser').textContent = vs.today_download_users ?? 0;
+        const db = document.getElementById('dlBody');
+        db.innerHTML = '';
+        if (!data.downloads.length) {
+            db.innerHTML = '<tr><td colspan="8" class="empty">暂无下载记录</td></tr>';
+        } else {
+            data.downloads.forEach(d => {
+                const geo = [d.country, d.region, d.city].filter(Boolean).join(' / ') || '-';
+                const tr = document.createElement('tr');
+                tr.innerHTML =
+                    '<td>' + escapeHtml(d.created_at) + '</td>' +
+                    '<td>' + escapeHtml(d.ip || '-') + '</td>' +
+                    '<td>' + escapeHtml(geo) + '</td>' +
+                    '<td>' + escapeHtml(d.device || '-') + '</td>' +
+                    '<td>' + escapeHtml(d.platform || '-') + '</td>' +
+                    '<td class="url"><a href="' + escapeHtml(d.url) + '" target="_blank">' + escapeHtml(d.url) + '</a></td>' +
+                    '<td>' + (d.success ? '<span class="badge ok">成功</span>' : '<span class="badge fail">失败</span>') + '</td>' +
+                    '<td>' + escapeHtml(d.error || '-') + '</td>';
+                db.appendChild(tr);
+            });
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+async function changePassword() {
+    const oldPw = document.getElementById('oldPassword').value;
+    const newPw = document.getElementById('newPassword').value;
+    const confirmPw = document.getElementById('confirmPassword').value;
+    const msg = document.getElementById('pwMsg');
+    if (!oldPw) { msg.textContent = '请输入当前密码'; msg.className = 'msg err'; return; }
+    if (newPw.length < 6 || newPw.length > 64) { msg.textContent = '新密码长度需为 6-64 位'; msg.className = 'msg err'; return; }
+    if (newPw !== confirmPw) { msg.textContent = '两次输入的新密码不一致'; msg.className = 'msg err'; return; }
+    if (oldPw === newPw) { msg.textContent = '新密码不能与旧密码相同'; msg.className = 'msg err'; return; }
+    try {
+        const res = await fetch('/admin/api/password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ old_password: oldPw, new_password: newPw })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok) {
+            msg.textContent = data.message || '密码修改成功，即将重新登录…';
+            msg.className = 'msg ok';
+            setTimeout(() => { location.href = '/admin/logout'; }, 1500);
+        } else {
+            msg.textContent = data.message || '修改失败';
+            msg.className = 'msg err';
+        }
+    } catch (e) {
+        msg.textContent = '网络错误';
+        msg.className = 'msg err';
+    }
+}
+
+async function saveSettings() {
+    const title = document.getElementById('siteTitle').value.trim();
+    const footer = document.getElementById('footerText').value.trim();
+    const ga4Id = document.getElementById('ga4Id').value.trim();
+    const baiduId = document.getElementById('baiduId').value.trim();
+    const msg = document.getElementById('saveMsg');
+    if (!title) { msg.textContent = '标题不能为空'; msg.className = 'msg err'; return; }
+    try {
+        const res = await fetch('/admin/api/settings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                site_title: title,
+                footer_text: footer,
+                ga4_id: ga4Id,
+                baidu_id: baiduId
+            })
+        });
+        if (res.ok) {
+            msg.textContent = '设置已保存，刷新前台页面即可生效';
+            msg.className = 'msg ok';
+        } else {
+            msg.textContent = '保存失败';
+            msg.className = 'msg err';
+        }
+    } catch (e) {
+        msg.textContent = '网络错误';
+        msg.className = 'msg err';
+    }
+}
+
+async function saveAdsTxt() {
+    const ads = document.getElementById('adsTxt').value;
+    const adsenseClientId = document.getElementById('adsenseClientId').value.trim();
+    const adsenseAdSlot = document.getElementById('adsenseAdSlot').value.trim();
+    const msg = document.getElementById('adsMsg');
+    try {
+        const res = await fetch('/admin/api/settings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                ads_txt: ads,
+                adsense_client_id: adsenseClientId,
+                adsense_ad_slot: adsenseAdSlot
+            })
+        });
+        if (res.ok) {
+            msg.textContent = 'ads.txt 已保存，访问 /ads.txt 即可查看';
+            msg.className = 'msg ok';
+        } else {
+            msg.textContent = '保存失败';
+            msg.className = 'msg err';
+        }
+    } catch (e) {
+        msg.textContent = '网络错误';
+        msg.className = 'msg err';
+    }
+}
+
+async function saveDownloadConfig() {
+    const proxy = document.getElementById('proxyUrl').value.trim();
+    const cookies = document.getElementById('cookiesText').value;
+    const msg = document.getElementById('configMsg');
+    try {
+        const res = await fetch('/admin/api/settings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ proxy_url: proxy, cookies_text: cookies })
+        });
+        if (res.ok) {
+            msg.textContent = '下载配置已保存，立即生效';
+            msg.className = 'msg ok';
+        } else {
+            msg.textContent = '保存失败';
+            msg.className = 'msg err';
+        }
+    } catch (e) {
+        msg.textContent = '网络错误';
+        msg.className = 'msg err';
+    }
+}
+
+async function testCookie(btn) {
+    const platform = document.getElementById('cookiePlatform').value;
+    const msg = document.getElementById('cookieTestMsg');
+    msg.textContent = '正在检测，请稍候…';
+    msg.className = 'msg';
+    btn.disabled = true;
+    try {
+        const res = await fetch('/admin/api/cookie/test?platform=' + encodeURIComponent(platform));
+        const data = await res.json();
+        if (!res.ok) { msg.textContent = data.detail || '检测失败'; msg.className = 'msg err'; return; }
+        if (data.status === 'valid') {
+            msg.textContent = '✓ ' + data.message;
+            msg.className = 'msg ok';
+        } else if (data.status === 'no_cookie' || data.status === 'unclear') {
+            msg.textContent = 'ℹ ' + data.message;
+            msg.className = 'msg';
+        } else {
+            msg.textContent = '✗ ' + data.message;
+            msg.className = 'msg err';
+        }
+        document.getElementById('cookieCheckTime').textContent = '上次检测：' + (data.checked_at || '-') + '（' + data.status + '）';
+    } catch (e) {
+        msg.textContent = '网络错误';
+        msg.className = 'msg err';
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+async function updateCookieFromApi(btn) {
+    const apiUrl = document.getElementById('cookieApiUrl').value.trim();
+    const hours = document.getElementById('cookieAutoHours').value.trim();
+    const msg = document.getElementById('cookieApiMsg');
+    if (!apiUrl) { msg.textContent = '请先填写 Cookie API 地址'; msg.className = 'msg err'; return; }
+    msg.textContent = '正在从 API 拉取 Cookie…';
+    msg.className = 'msg';
+    btn.disabled = true;
+    try {
+        const res = await fetch('/admin/api/settings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cookie_api_url: apiUrl, cookie_auto_update_hours: hours || '0' })
+        });
+        if (!res.ok) { msg.textContent = '保存 API 配置失败'; msg.className = 'msg err'; return; }
+        const up = await fetch('/admin/api/cookie/update', { method: 'POST' });
+        const data = await up.json();
+        if (!up.ok) { msg.textContent = data.detail || '更新失败'; msg.className = 'msg err'; return; }
+        if (data.ok) {
+            msg.textContent = '✓ ' + data.message;
+            msg.className = 'msg ok';
+            document.getElementById('cookieUpdateTime').textContent = '上次更新：' + (data.updated_at || '-');
+        } else {
+            msg.textContent = '✗ ' + data.message;
+            msg.className = 'msg err';
+        }
+    } catch (e) {
+        msg.textContent = '网络错误';
+        msg.className = 'msg err';
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const panel = document.getElementById('panel');
+    if (panel) loadStats();
+});
+</script>
+</body>
+</html>
